@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import './GithubUser.css'
 
 class GithubUser extends Component {
     constructor(props){
@@ -8,17 +9,34 @@ class GithubUser extends Component {
             user: {}
         }
 
-        this.fetchUserData()
+        this.fetchUserData(props)
     }
 
-    fetchUserData = () =>{
-        fetch(`https://api.github.com/users/${this.props.match.params.username}`)
+    fetchUserData = (props) =>{
+        fetch(`https://api.github.com/users/${props.match.params.username}`)
         .then(response => response.json())
         .then(user => this.setState({ user }))
     }
 
+    componentWillReceiveProps(nextProps){
+        const locationChanged = nextProps.location !== this.props.location
+        if(locationChanged){
+            this.fetchUserData(nextProps)
+        }
+    }
+
     render(){
-        return <h1>Go fuck yourself</h1>
+        const { user } = this.state
+        return (
+            <div className='github-user'>
+                <img src={user.avatar_url} alt="github user avatar" />
+                <h2>{user.login}</h2>
+                <h3>Followers: {user.followers}</h3>
+                <h3>Following: {user.following}</h3>
+                <h3>Location: {user.location}</h3>
+                <a href={user.html_url} target="_">Link to user's profile</a>
+            </div>
+        )
     }
 }
 
