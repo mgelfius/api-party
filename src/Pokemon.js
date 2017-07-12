@@ -1,10 +1,21 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import './Pokemon.css'
+import PokemonData from './PokemonData'
 
 class Pokemon extends Component{
-    constructor(){
-        super()
+    state={
+        pokeNumber:''
+    }
+
+    handleChange = (ev) =>{
+        this.setState({ pokeNumber: ev.target.value})
+    }
+
+    handleSubmit = (ev) =>{
+        ev.preventDefault()
+        this.props.history.push(`/pokemon/${this.state.pokeNumber}`)
+        this.setState({pokeNumber: ''})
     }
 
     render(){
@@ -16,12 +27,16 @@ class Pokemon extends Component{
                 <form onSubmit={this.handleSubmit}>
                     <div>
                         <input type="text"
+                        value={this.state.pokeNumber}
+                        onChange={this.handleChange}
                         />
                     </div>
                     <div>
                         <button type="submit">Look up Pokémon</button>
                     </div>
                  </form>
+                 <Route path="/pokemon/:pokeNumber"  component={PokemonData}/>
+                 <Route exact path="/pokemon" render={() => <h3>Enter a number to find a Pokémon </h3>} />
             </div>
         )
     }
